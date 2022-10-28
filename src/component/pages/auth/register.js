@@ -17,8 +17,9 @@ function Register(props) {
         'Access-Control-Allow-Headers':'Content-Type, X-Auth-Token, Origin, Authorization',
       }
     }).then((res) => {
-        UserProfile.setEmail(res.data[0].email);
-        UserProfile.setId(res.data[0].id);
+        UserProfile.setEmail(res.data.email);
+        UserProfile.setId(res.data.id);
+        UserProfile.setSteamId(res.data.steamId);
         props.handleClick('/')
       });
   };

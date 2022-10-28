@@ -12,9 +12,12 @@ function SignIn(props) {
         password: password,
       })
       .then((res) => {
-        UserProfile.setEmail(res.data[0].email);
-        UserProfile.setId(res.data[0].id);
-        props.handleClick("/");
+        if (res.data) {
+          UserProfile.setEmail(res.data.email);
+          UserProfile.setId(res.data.id);
+          UserProfile.setSteamId(res.data.steamId);
+          props.handleClick("/");
+        }
       });
   };
   return (
@@ -65,7 +68,7 @@ function SignIn(props) {
             <div className="row">
               <div className="col-md-4 col-md-push-4">
                 <div id="identity-providers">
-                  <a href={props.global.STORAGE+"/account/login/steam"}>
+                  <a href={props.global.STORAGE + "/account/login/steam"}>
                     <img
                       src="https://cdn.battlemetrics.com/app/assets/steam_signin.28556.png"
                       alt="Sign in with Steam"

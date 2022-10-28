@@ -16,9 +16,18 @@ var UserProfile = (function () {
       return sessionStorage.getItem("id");
     }
   };
-
   var setId = function (value) {
     sessionStorage.setItem("id", value);
+  };
+  var getSteamId = function () {
+    if (sessionStorage.getItem("steamid") == null) {
+      return null;
+    } else {
+      return sessionStorage.getItem("steamid");
+    }
+  };
+  var setSteamId = function (value) {
+    sessionStorage.setItem("steamid", value);
   };
   var logout = function (value) {
     sessionStorage.clear();
@@ -29,6 +38,8 @@ var UserProfile = (function () {
     setEmail: setEmail,
     getId: getId,
     setId: setId,
+    getSteamId: getSteamId,
+    setSteamId: setSteamId,
     logout: logout,
   };
 })();

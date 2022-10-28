@@ -23,10 +23,13 @@ import Logout from "./component/pages/auth/logout";
 import Search from "./component/pages/search/search";
 import Leaderboard from "./component/pages/leaderboard/leaderboard";
 import Sessions from "./component/pages/sessions/sessions";
+import Addons from "./component/pages/account/addons/addons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
 import React, { useState } from "react";
-
+import Account from "./component/pages/account/account";
+import Stats from "./component/pages/stats/stats";
+import UserServers from "./component/pages/account/servers/userServers";
 function Root() {
   const [data, setData] = useState([]);
   const [link, setLink] = useState(null);
@@ -35,6 +38,8 @@ function Root() {
   const global = {
     API: "http://127.0.0.1:8000/api",
     STORAGE: "http://127.0.0.1:8000",
+    TEBEXUSER: "1201426",
+    TEBEXPASS: "XguUpua8xiBxWsPJ368FPHEumCOVStUn",
   };
   const navigate = useNavigate();
   function handleClick(route) {
@@ -81,6 +86,18 @@ function Root() {
         <Route path="banners/about" element={<Banners global={global} />} />
         <Route path="alerts" element={<Alerts global={global} />} />
         <Route
+          path="account"
+          element={<Account handleClick={handleClick} global={global} />}
+        />
+        <Route
+          path="account/servers"
+          element={<UserServers handleClick={handleClick} global={global} />}
+        />
+        <Route
+          path="account/servers/addons/:id"
+          element={<Addons handleClick={handleClick} global={global} />}
+        />
+        <Route
           path="account/login"
           element={<SignIn handleClick={handleClick} global={global} />}
         />
@@ -97,6 +114,7 @@ function Root() {
           element={<Logout handleClick={handleClick} global={global} />}
         />
         <Route path="servers/:id" element={<GameDetail global={global} />} />
+        <Route path="servers/:id/stats" element={<Stats global={global} />} />
         <Route
           path="servers/search"
           element={
@@ -111,8 +129,9 @@ function Root() {
         />
         <Route
           path="servers/:id/:id"
-          element={<ServerDetail global={global} />}
+          element={<ServerDetail handleClick={handleClick} global={global} />}
         />
+
         <Route
           path="servers/:id/:id/leaderboard"
           element={<Leaderboard global={global} />}

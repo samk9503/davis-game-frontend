@@ -29,15 +29,13 @@ const ValueContainer = (propss) => {
         {propss.hasValue ? "" : "Countries"}
       </components.Placeholder>
       <components.ValueContainer {...propss}>
-        {propss
-          .getValue()
-          .map((e, i) =>
-            i + 1 === propss.getValue().length ? (
-              <p>{e.label}</p>
-            ) : (
-              <p>{e.label},</p>
-            )
-          )}
+        <span className="css-ekcj9h">
+          {propss
+            .getValue()
+            .map((e, i) =>
+              i + 1 === propss.getValue().length ? e.label : e.label + ","
+            )}
+        </span>
       </components.ValueContainer>
     </div>
   );
@@ -514,6 +512,77 @@ const SearchForm = (props) => {
         });
     }
   };
+  useEffect(() => {
+    if (props.searchingQuery) {
+      var countreisStr = "";
+      if (selectedOption) {
+        selectedOption.forEach((element, index) => {
+          countreisStr +=
+            "&filter[server][countries][" + index + "]=" + element.value;
+        });
+      }
+      var TFmode = "";
+      featureFilter.forEach((e, i) => {
+        TFmode += "&filter[server][features][" + e.id + "]=" + e.value;
+      });
+      var dropsDown = "";
+      var checked = [];
+      featureFilterDropDown.forEach((e, i) => {
+        if (!checked.includes(e.id)) {
+          checked.push(e.id);
+          var filterData = featureFilterDropDown.filter(
+            (obj) => obj.id === e.id
+          );
+          filterData.forEach((element, index) => {
+            dropsDown +=
+              "&filter[server][features][" +
+              element.id +
+              "][" +
+              element.type +
+              "][" +
+              index +
+              "]=" +
+              element.value;
+          });
+        }
+      });
+      var fromTo = "";
+      featureFilterFromTo.forEach((element, index) => {
+        if (element.from != null) {
+          fromTo +=
+            "&filter[server][features][" +
+            element.id +
+            "]=" +
+            element.from +
+            ":" +
+            element.to;
+        }
+      });
+      var query =
+        (name ? "&filter[server][search]=" + name : "") +
+        (game ? "&filter[server][game]=" + game : "") +
+        (serverStatus ? "&filter[server][status]=" + serverStatus : "") +
+        (minPlayers ? "&filter[server][players][min]=" + minPlayers : "") +
+        (maxPlayers ? "&filter[server][players][max]=" + maxPlayers : "") +
+        (maxDistance ? "&filter[server][maxDistance]=" + maxDistance : "") +
+        countreisStr +
+        TFmode +
+        dropsDown +
+        fromTo;
+      props.searchingQuery(query);
+    }
+  }, [
+    selectedOption,
+    featureFilter,
+    featureFilterDropDown,
+    featureFilterFromTo,
+    maxDistance,
+    maxPlayers,
+    minPlayers,
+    serverStatus,
+    game,
+    name,
+  ]);
   const searchServers = (e) => {
     if (e !== "e") {
       e.preventDefault();
@@ -818,9 +887,13 @@ const SearchForm = (props) => {
       {gameFeature}
       {gameFeature1}
       {gameFeature2}
-      <button type="submit" className="css-1dcotcn">
-        Search
-      </button>
+      {props.dontShowSearch ? (
+        <></>
+      ) : (
+        <button type="submit" className="css-1dcotcn">
+          Search
+        </button>
+      )}
     </form>
   );
 };

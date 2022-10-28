@@ -86,14 +86,24 @@ function Home(props) {
                   {e.data.attributes.name}
                 </a>
               </div>
-              <div className="css-1w9akvc" style={{height:"77%"}}>
-                <ChartFav id={e.data.attributes.id} max={e.data.attributes.maxPlayers}  />
+              <div className="css-1w9akvc" style={{ height: "77%" }}>
+                <ChartFav
+                  id={e.data.attributes.id}
+                  max={e.data.attributes.maxPlayers}
+                />
               </div>
               <footer className="css-1syrouw">
-                <span title={e.data.attributes.ip+':'+e.data.attributes.port} className="css-xd87ek">
-                  {e.data.attributes.address?e.data.attributes.address+':'+e.data.attributes.port:e.data.attributes.ip+':'+e.data.attributes.port}
+                <span
+                  title={e.data.attributes.ip + ":" + e.data.attributes.port}
+                  className="css-xd87ek"
+                >
+                  {e.data.attributes.address
+                    ? e.data.attributes.address + ":" + e.data.attributes.port
+                    : e.data.attributes.ip + ":" + e.data.attributes.port}
                 </span>
-                <span className="css-1sa78x5">{e.data.attributes.players}/{e.data.attributes.maxPlayers}</span>
+                <span className="css-1sa78x5">
+                  {e.data.attributes.players}/{e.data.attributes.maxPlayers}
+                </span>
               </footer>
             </div>
           </div>
@@ -109,11 +119,13 @@ function Home(props) {
           id: UserProfile.getId(),
         })
         .then((res) => {
-          var x = [];
-          res.data.forEach((e) => {
-            x.push(e);
-          });
-          setFavoriteIDS(x);
+          if (res.data) {
+            var x = [];
+            res.data.forEach((e) => {
+              x.push(e);
+            });
+            setFavoriteIDS(x);
+          }
         });
     };
     getFaviroateServer();

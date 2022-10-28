@@ -7,6 +7,8 @@ import getDistance from "geolib/es/getDistance";
 import Chart from "./widgets/chart";
 import moment from "moment";
 import UserProfile from "../auth/user";
+import Swal from 'sweetalert2'
+
 const ServerDetail = (props) => {
   var id = useParams().id;
   const [loading, setLoading] = useState(true);
@@ -39,6 +41,73 @@ const ServerDetail = (props) => {
       })
       .then((res) => {
         setIsFavorite(false);
+      });
+  };
+  const vote = (e) => {
+    e.preventDefault();
+
+    axios
+      .post(props.global.API + "/getAddons", { serverId: id })
+      .then((res) => {
+        if (res.data) {
+          var addons = [];
+          res.data.forEach((element) => {
+            addons.push(element);
+          });
+          if (addons.some((el) => el.addonsId === "6")) {
+            axios
+              .post(props.global.API + "/setVotes", {
+                serverId: id,
+                userId: UserProfile.getId(),
+                after: 8,
+              })
+              .then((res) => {
+                if (res.data != "already voted") {
+                  if (addons.some((el) => el.addonsId === "1")) {
+                    axios.post(
+                      addons.filter((el) => el.addonsId === "1")[0].webhook,
+                      {
+                        content: "someone voted for your server",
+                      }
+                    );
+                  }
+                }
+              });
+          } else {
+            axios
+              .post(props.global.API + "/setVotes", {
+                serverId: id,
+                userId: UserProfile.getId(),
+                after: 12,
+              })
+              .then((res) => {
+                if (res.data != "already voted") {
+                if (addons.some((el) => el.addonsId === "1")) {
+                  axios.post(
+                    addons.filter((el) => el.addonsId === "1")[0].webhook,
+                    {
+                      content: "someone voted for your server",
+                    }
+                  );
+                }
+                Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'voted successfully',
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              }else{
+                  Swal.fire({
+                    title: 'Try again later',
+                    text: 'You can\'t vote right now because you already voted',
+                    icon: 'error',
+                    confirmButtonText: 'close'
+                  })
+                }
+              });
+          }
+        }
       });
   };
   useEffect(() => {
@@ -401,7 +470,15 @@ const ServerDetail = (props) => {
             <h2 className="css-u0fcdd">
               {server.attributes.name}
               <div className="server-btns pull-right">
-                {" "}
+                <a
+                  className="css-1dcotcn"
+                  href="vote"
+                  onClick={(e) => {
+                    vote(e);
+                  }}
+                >
+                  Vote
+                </a>{" "}
                 <a
                   href={
                     "steam://connect/" +
@@ -423,11 +500,10 @@ const ServerDetail = (props) => {
                 <button
                   type="button"
                   className={isFavorite ? "css-1dbjou6" : "css-p0j53r"}
-                  onClick={(e) =>{
+                  onClick={(e) => {
                     e.preventDefault();
-                    isFavorite ? removeFromFavorite() : addToFavorite()}
-                    
-                  }
+                    isFavorite ? removeFromFavorite() : addToFavorite();
+                  }}
                 >
                   <i className="glyphicon glyphicon-star" />{" "}
                 </button>{" "}
